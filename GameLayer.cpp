@@ -94,7 +94,7 @@ bool GameLayer::init()
 	label4->setPosition(Vec2(winSize.width / 2, 100));
 	this->addChild(label4, 5);
 
-	_sioClient = SocketIO::connect("http://10.4.62.100:3000/", *this);
+	_sioClient = SocketIO::connect(OpenLayer::socketIoIp, *this);
 	_sioClient->on("findAllCallBack", CC_CALLBACK_2(GameLayer::findAllCallBack, this));
 	_sioClient->on("farDisconnect", CC_CALLBACK_2(GameLayer::farDisconnect, this));
 	_sioClient->on("callConnect", CC_CALLBACK_2(GameLayer::callConnect, this));

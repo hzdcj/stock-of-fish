@@ -11,7 +11,7 @@ USING_NS_CC;
 #define HSocket SOCKET
 
 #elif (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-#include <error.h>
+//#include <error.h>
 #include <arpa/inet.h>		// for inet_**
 #include <netdb.h>			// for gethost**
 #include <netinet/in.h>		// for sockaddr_in

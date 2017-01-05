@@ -149,7 +149,7 @@ bool FishLayer::init()
 		SimpleAudioEngine::getInstance()->playBackgroundMusic("bgm_scene2.mp3", true);
 	}
 	
-	_sioClient = SocketIO::connect("http://10.4.62.100:3000/", *this);
+	_sioClient = SocketIO::connect(OpenLayer::socketIoIp, *this);
 	_sioClient->on("farDisconnect", CC_CALLBACK_2(FishLayer::farDisconnect, this));
 	_sioClient->on("callConnect", CC_CALLBACK_2(FishLayer::callConnect, this));
 	return true; 
