@@ -21,6 +21,8 @@ public:
 	void sendMessage(const char* data, int count);
 	void update(float dt);
 
+	static SocketServer* s_server;
+
 	std::function<void(const char* ip)> onStart;
 	std::function<void(HSocket socket)> onNewConnection;
 	std::function<void(HSocket socket, const char* data, int count)> onRecv;
@@ -39,7 +41,6 @@ private:
 	void recvMessage(HSocket socket);
 	
 private:
-	static SocketServer* s_server;
 	HSocket _socketServer;
 	unsigned short _serverPort;
 

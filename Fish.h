@@ -40,7 +40,7 @@ public:
 	virtual bool init();
 	CREATE_FUNC(LightFish);
 	Sprite* lightFishImage;
-	void randMove();
+	void randMove();  //Ëæ»úÓÎ¶¯
 	int f[3];
 	int ff = 0;
 	ParticleSun *sun;

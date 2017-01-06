@@ -16,7 +16,7 @@ float FishLayer::rotationSpeed = 2.5;
 bool FishLayer::init()
 { 
 	initServer();
-	_timeLost = 3 + level * 1;
+	_timeLost = 30 + level * 15;
 	qipao = NULL;
 	lightFishCall = false;
 	_connected = false;
@@ -855,7 +855,8 @@ void FishLayer::onDisconnect(HSocket socket)
 	unschedule(CC_SCHEDULE_SELECTOR(FishLayer::updateTimesPerSecond));
 	auto delay = DelayTime::create(2);
 	auto fun = CallFunc::create([=](){	_server->destroyInstance();
-	                                    _server = nullptr; });
+	                                    _server = nullptr;
+										 });
    this->runAction(Sequence::create(delay, fun, NULL));
 	CCLOG("_server =nullptr");
 }

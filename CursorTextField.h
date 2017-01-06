@@ -9,18 +9,13 @@ class CursorTextField : public TextFieldTTF, public TextFieldDelegate, public IM
 {
 private:
 
-
-	// 点击开始位置
 	Point m_beginPos;
-	// 光标精灵
 	Sprite * m_pCursorSprite;
-	// 光标动画
 	Action *m_pCursorAction;
-	// 光标坐标
 	Point m_cursorPos;
-	//输入框长度
+
 	float inputFrameWidth;
-	//允许输入的最大字符数Unicode
+
 	float inputMaxLength;
 	int nLenCount;
 	int codeNumType[50];    //每个字符对应的字节数量
@@ -33,16 +28,16 @@ private:
 public:
 	CursorTextField();
 	~CursorTextField();
-	// static
+
 	static CursorTextField * textFieldWithPlaceHolder(cocos2d::Node * node, const char *placeholder, const char *fontName, float fontSize);
-	// Layer
+
 	void onEnter();
 	void onExit();
 	bool init();
-	// 初始化光标精灵
+	
 	void initCursorSprite(int nHeight);
 
-	// TextFieldDelegate
+
 	virtual bool onTextFieldAttachWithIME(TextFieldTTF *pSender) override;
 	virtual bool onTextFieldDetachWithIME(TextFieldTTF * pSender) override;
 	virtual bool onTextFieldInsertText(cocos2d::TextFieldTTF*  sender, const char * text, size_t nLen) override;

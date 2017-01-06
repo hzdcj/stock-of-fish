@@ -136,10 +136,17 @@ void SocketServer::acceptFunc()
 	{
 		CCLOG("start a accept thread");
 		HSocket clientSock = accept(_socketServer, (sockaddr*)&sockAddr, &len);
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 		if (clientSock == INVALID_SOCKET)
 		{
 			break;
 		}
+#elif (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+		if (clientSock <0)
+		{
+			break;
+		}
+#endif
 		if (error(clientSock))
 		{
 			CCLOG("accept error!");

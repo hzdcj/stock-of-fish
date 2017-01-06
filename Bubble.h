@@ -8,8 +8,8 @@ class Bubble :public Node
 {
 public:
 	static Bubble* create(const string&, float second);
-	void down();
-	Vec2 randomGenerate();
+	void down();  //气泡下落
+	Vec2 randomGenerate();  //随机生成气泡
 	CREATE_FUNC(Bubble);
 	void bubbleInit(const string&, float second);
 	Sprite* bubbleImage;

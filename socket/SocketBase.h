@@ -68,7 +68,6 @@ public:
 	SocketBase();
 	~SocketBase();
 
-	bool nonBlock(HSocket socket);
 
 protected:
 	void closeConnect(HSocket socket);

@@ -1,8 +1,26 @@
 ﻿#include"SimpleAudioEngine.h"
 #include"SceneManger.h"
 #include"OpenLayer.h"
-#include<WinSock2.h>
 #include"CursorTextField.h"
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+#include <WinSock2.h>
+#pragma comment(lib, "WS2_32.lib")
+#define HSocket SOCKET
+
+#elif (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+#include <errno.h>
+#include <arpa/inet.h>		// for inet_**
+#include <netdb.h>			// for gethost**
+#include <netinet/in.h>		// for sockaddr_in
+#include <sys/types.h>		// for socket
+#include <sys/socket.h>		// for socket
+#include <unistd.h>
+#include <stdio.h>		    // for printf
+#include <stdlib.h>			// for exit
+#include <string.h>			// for bzero
+#include <net/if.h>
+#define HSocket int
+#endif 
 USING_NS_CC;
 
 string OpenLayer::farIpAddress;
@@ -258,14 +276,15 @@ void OpenLayer::menuCallBack(Ref *pSender)
 				}
 				else
 				{
+
 					__String *content = __String::createWithFormat("{\"content\":\"%s\",\"flag\":\"%d\"}", getLocalAddress().c_str(), 1);
 					_sioClient->emit("create", content->getCString());
+
+
 				}
 
 				break;
 	}
-	case 106:
-		_sioClient->emit("findAll", getLocalAddress());
 	case 108:
 	{
 				string aaa = m_pCursorInputLayer->getInputText();
@@ -293,6 +312,7 @@ void OpenLayer::updateTimesPerSecond(float delta)
 
 string OpenLayer::getLocalAddress()
 {
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 	WORD wVersionRequested = MAKEWORD(2, 2);
 	WSADATA wsaData;
 	if (WSAStartup(wVersionRequested, &wsaData) != 0)
@@ -309,6 +329,68 @@ string OpenLayer::getLocalAddress()
 	localIpAdress = localIP;
 	WSACleanup();
 	return localIP;
+#elif(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+	Size winSize = Director::getInstance()->getWinSize();
+	/*int sock_get_ip;
+	struct   sockaddr_in *sin;
+	struct   ifreq ifr_ip;
+	if ((sock_get_ip = socket(AF_INET, SOCK_STREAM, 0)) == -1) 
+	{
+		CCLOG("get_ip error");
+		auto label4 = Label::createWithSystemFont("get_ip error", "Times New Roman", 30);
+		label4->setPosition(Vec2(winSize.width *0.9, 400));
+		this->addChild(label4);
+		return "";
+	}
+	memset(&ifr_ip, 0, sizeof(ifr_ip));
+	strncpy(ifr_ip.ifr_name, "wlan0", sizeof(ifr_ip.ifr_name) - 1);
+	if (ioctl(sock_get_ip, SIOCGIFADDR, &ifr_ip) < 0){
+		char errmsg[30];
+		string mesg(strerror(errno));
+		auto label4 = Label::createWithSystemFont(mesg, "Times New Roman", 30);
+		label4->setPosition(Vec2(winSize.width *0.9, 400));
+		this->addChild(label4);
+		sprintf(errmsg, "getip1:%d", errno);
+		return "";
+	}
+	sin = (struct sockaddr_in *)&ifr_ip.ifr_addr;
+	char *szLocalIP = NULL;
+	strcpy(szLocalIP, inet_ntoa(sin->sin_addr));
+	close(sock_get_ip);
+	string localIP(szLocalIP);
+	localIpAdress = localIP;
+	return localIP;*/
+	int sockfd;
+	struct ifconf ifconf;
+	struct ifreq *ifreq;
+	char buf[512];
+	ifconf.ifc_len = 512;
+	ifconf.ifc_buf = buf;
+	string allIp;
+	if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0))<0)
+	{
+		auto label4 = Label::createWithSystemFont("sockfd error", "Times New Roman", 30);
+		label4->setPosition(Vec2(winSize.width *0.9, 400));
+		this->addChild(label4);
+		return "";
+	}
+	ioctl(sockfd, SIOCGIFCONF, &ifconf);
+	ifreq = (struct ifreq*)ifconf.ifc_buf;
+	for (int i = (ifconf.ifc_len / sizeof(struct ifreq)); i>0; i--)
+	{
+		if (ifreq->ifr_flags == AF_INET)
+		{
+			char* IP = inet_ntoa(((struct sockaddr_in*)&(ifreq->ifr_addr))->sin_addr);
+			ifreq++;
+			if (!strcmp(IP, "127.0.0.1"))
+				continue;
+			string localIp(IP);
+			allIp = allIp + localIp;
+		}
+	}
+	localIpAdress = allIp;
+	return allIp;
+#endif
 }
 void OpenLayer::onConnect(SIOClient* client)
 {

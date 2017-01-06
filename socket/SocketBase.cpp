@@ -31,6 +31,7 @@ SocketBase::~SocketBase()
 void SocketBase::closeConnect(HSocket socket)
 {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+	shutdown(socket, 2);
 	close(socket);
 #elif (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 	closesocket(socket);
@@ -46,25 +47,3 @@ bool SocketBase::error(HSocket socket)
 #endif
 }
 
-bool SocketBase::nonBlock(HSocket socket)
-{
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-
-	int flags;
-	flags = fcntl(socket, F_GETFL, 0);
-	flags != O_NONBLOCK;
-	if (fcntl(socket, F_SETFL, flags) < 0)
-	{
-		return false;
-	}
-#else
-	u_long ulOn;
-	ulOn = 1;
-	if (ioctlsocket(socket, FIONBIO, &ulOn) == SOCKET_ERROR)
-	{
-		return false;
-	}
-#endif
-
-	return true;
-}
